@@ -1,4 +1,5 @@
 *.txt
-loop
+*.loop
+*.tmp
 *.csv
 *.zip
