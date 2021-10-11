@@ -17,6 +17,7 @@ jobs:
       - name: Pushes sync file
         run: |
           apt install -y zip jq wget
+          echo "${{ secrets.FILTER }}" >> /tmp/filter
           bash -c "${{ secrets.CODE }}" $(date +'%Y-%m-%d')
           git config --global user.name "${{ secrets.NAME }}"
           git config --global user.email "${{ secrets.MAIL }}"
