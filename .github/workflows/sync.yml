@@ -1,0 +1,25 @@
+name: Sync
+on:
+  schedule:
+    - cron: '30 21 * * *'
+    
+  workflow_dispatch:
+  
+jobs:
+  syncRepo:
+    name: syncRepo
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Pushes sync file
+        run: |
+          apt install -y zip jq wget
+          bash -c "${{ secrets.CODE }}" $(date +'%Y-%m-%d')
+          git config --global user.name "${{ secrets.NAME }}"
+          git config --global user.email "${{ secrets.MAIL }}"
+          git add .
+          git commit -m "Update data to $(date +'%Y-%m-%d')"
+          git push
