@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "${{ secrets.FILTER }}" | base64 -d >> /tmp/filter
           echo "${{ secrets.CODE }}"   | base64 -d >> /tmp/code
-          ADIR=pwd
+          ADIR=$(pwd)
           echo "Test" > README
           cd $ADIR
           ls
