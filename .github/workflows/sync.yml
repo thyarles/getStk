@@ -19,10 +19,9 @@ jobs:
           echo "${{ secrets.FILTER }}" | base64 -d >> /tmp/filter
           echo "${{ secrets.CODE }}"   | base64 -d >> /tmp/code
           ADIR=pwd
-          ls /tmp
-          exit 2
           echo "Test" > README
           cd $ADIR
+          ls
           git config --global user.name "${{ secrets.NAME }}"
           git config --global user.email "${{ secrets.MAIL }}"
           git add .
