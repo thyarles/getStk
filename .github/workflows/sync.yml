@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "${{ secrets.FILTER }}" | base64 -d >> /tmp/filter
           echo "${{ secrets.CODE }}"   | base64 -d >> /tmp/code
-          bash /tmp/code $(date +'%Y-%m-%d')
+          bash /tmp/code
           git config --global user.name "${{ secrets.NAME }}"
           git config --global user.email "${{ secrets.MAIL }}"
           git add .
