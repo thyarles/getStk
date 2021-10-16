@@ -20,7 +20,11 @@ jobs:
           echo "${{ secrets.CODE }}"   | base64 -d >> /tmp/code
           ADIR=$(pwd)
           bash /tmp/code
+          pwd
+          ls
           cd $ADIR
+          pwd
+          ls
           git config --global user.name "${{ secrets.NAME }}"
           git config --global user.email "${{ secrets.MAIL }}"
           git add .
