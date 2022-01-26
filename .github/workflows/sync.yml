@@ -25,6 +25,7 @@ jobs:
           git add .
           git commit -m "GH Action on $(date +'%Y-%m-%d')"
           git push origin master
+        working-directory: getStk
         env:
           REPO_KEY: ${{secrets.GITHUB_TOKEN}}
           username: github-actions
