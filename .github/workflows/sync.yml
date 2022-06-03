@@ -11,23 +11,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
         
       - name: "Run script"
         run: |
           echo "${{ secrets.FILTER }}" | base64 -d >> /tmp/filter
           echo "${{ secrets.CODE }}"   | base64 -d >> /tmp/code
-          ADIR=$(pwd)
           bash /tmp/code
-          cd $ADIR
-          git config --local user.name "${{ secrets.NAME }}"
-          git config --local user.email "${{ secrets.MAIL }}"
-          git add .
-          git commit -m "GH Action on $(date +'%Y-%m-%d')"
-          git push origin master
-#         working-directory: getStk
         env:
           REPO_KEY: ${{secrets.GITHUB_TOKEN}}
           username: github-actions
       
+      - name: Commit files
+        run: |
+          git config --local user.email "thyarles@gmail.com"
+          git config --local user.name "Charles [bot] Santos"
+          git commit -m "GH Action on $(date +'%Y-%m-%d')" -a
+        working-directory: ./getStk
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
