@@ -27,10 +27,9 @@ jobs:
       
       - name: Commit files
         run: |
-          git config --local user.email "thyarles@gmail.com"
-          git config --local user.name "Charles [bot] Santos"
+          git config --global user.email "thyarles@gmail.com"
+          git config --global user.name "Charles [bot] Santos"
           git commit -m "GH Action on $(date +'%Y-%m-%d')" -a
-        working-directory: ./getStk
 
       - name: Push changes
         uses: ad-m/github-push-action@master
