@@ -24,15 +24,10 @@ jobs:
         env:
           REPO_KEY: ${{secrets.GITHUB_TOKEN}}
           username: github-actions
-      
-      - name: Commit files
-        run: |
-          git config --global user.email "thyarles@gmail.com"
-          git config --global user.name "Charles [bot] Santos"
-          git commit -m "GH Action on $(date +'%Y-%m-%d')" -a
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          author_name: Charles Santos
+          author_email: thyarles@gmail.com
+          message: GH Action
