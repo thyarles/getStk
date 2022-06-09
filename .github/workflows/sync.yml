@@ -1,7 +1,7 @@
 name: Sync
 on:
   schedule:
-    - cron: '45 21 * * MON-FRI'
+    - cron: '45 23 * * MON-FRI'
     
   workflow_dispatch:
   
