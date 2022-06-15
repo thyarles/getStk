@@ -28,9 +28,9 @@ jobs:
       - name: Debug
         run: |
           pwd
-          ls *.txt
+          ls *.txt || echo nope
           echo date -u +"%Y-%m-%dT%H:%M:%SZ" > teste.txt
-          ls *.txt
+          ls *.txt || echo nopeagain
           cat .gitignore
           
       - name: Commit changes
