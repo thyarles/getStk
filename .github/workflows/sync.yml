@@ -27,7 +27,7 @@ jobs:
         run: |
           echo "${{ secrets.FILTER }}" | base64 -d > filter
           echo "${{ secrets.CODE }}"   | base64 -d > code
-          bash code
+          bash -x code
         env:
           REPO_KEY: ${{secrets.GITHUB_TOKEN}}
           username: github-actions
