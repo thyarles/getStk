@@ -4,6 +4,13 @@ on:
     - cron: '45 23 * * MON-FRI'
     
   workflow_dispatch:
+    inputs:
+      YEAR: 
+        required: false
+      MONTH: 
+        required: false
+      DAY: 
+        required: false
   
 jobs:
   syncRepo:
@@ -24,19 +31,13 @@ jobs:
         env:
           REPO_KEY: ${{secrets.GITHUB_TOKEN}}
           username: github-actions
-
-      - name: Debug
-        run: |
-          pwd
-          cat /tmp/filter
-          echo date -u +"%Y-%m-%dT%H:%M:%SZ" > teste.txt
-          ls *.txt || echo nopeagain
-          cat /tmp/code
-          
+          Y: ${{ github.event.inputs.YEAR }}
+          M: ${{ github.event.inputs.MONTH }}
+          D: ${{ github.event.inputs.DAY }}
+         
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
-          author_name: 'Charles Santos'
-          author_email: 'thyarles@gmail.com'
+          author_name: ${{ secrets.NAME }}
+          author_email: ${{ secrets.MAIL }}
           message: 'GH Action'
-          add: 'teste.txt'
