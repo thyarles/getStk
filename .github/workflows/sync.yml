@@ -28,10 +28,10 @@ jobs:
       - name: Debug
         run: |
           pwd
-          ls
-          echo date > $(date -u +"%Y-%m-%dT%H:%M:%SZ").txt
-          ls
-          git status
+          ls *.txt
+          echo date -u +"%Y-%m-%dT%H:%M:%SZ" > teste.txt
+          ls *.txt
+          cat .gitignore
           
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
@@ -39,4 +39,4 @@ jobs:
           author_name: 'Charles Santos'
           author_email: 'thyarles@gmail.com'
           message: 'GH Action'
-          add: '.'
+          add: 'teste.txt'
