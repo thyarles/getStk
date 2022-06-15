@@ -26,7 +26,12 @@ jobs:
           username: github-actions
 
       - name: Debug
-        run: echo date > $(date -u +"%Y-%m-%dT%H:%M:%SZ").txt
+        run: |
+          pwd
+          ls
+          echo date > $(date -u +"%Y-%m-%dT%H:%M:%SZ").txt
+          ls
+          git status
           
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
