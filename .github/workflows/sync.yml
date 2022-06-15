@@ -25,9 +25,13 @@ jobs:
           REPO_KEY: ${{secrets.GITHUB_TOKEN}}
           username: github-actions
 
+      - name: Debug
+        run: 
+          echo date > $(date -u +"%Y-%m-%dT%H:%M:%SZ").txt
+          
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
-          author_name: Charles Santos
-          author_email: thyarles@gmail.com
-          message: GH Action
+          author_name: 'Charles Santos'
+          author_email: 'thyarles@gmail.com'
+          message: 'GH Action'
