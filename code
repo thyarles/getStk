@@ -1,0 +1,94 @@
+#!/bin/bash
+# You need to have zip, jq and wget tools installed to use this script
+# Call as ./getStk.sh YEAR(YYYY) MONTH(MM) DAY(DD)
+set -u
+[[ $Y == "" ]] && Y=$(date +'%Y') # year
+[[ $M == "" ]] && M=$(date +'%m') # month
+[[ $D == "" ]] && D=$(date +'%d') # day
+
+F=$Y$M$D
+# Download data
+# https://arquivos.b3.com.br/apinegocios/tickercsv/BEEF3/2021-01-19
+echo "Baixando dados da B3..."
+[ -f $F.zip ] || wget https://arquivos.b3.com.br/apinegocios/tickercsv/$Y-$M-$D -O $F.zip &>/dev/null
+if [[ ! -s $F.zip ]]; then
+  echo "Sem dados para a data $D/$M/$Y!"
+  rm $F.zip
+  exit 0
+fi
+
+# Uncompress data
+echo "Descompactando..."
+unzip -n $F.zip &> /dev/null 
+
+# Clean data
+FILTRO=$(cat filter)
+echo "Limpando dados..."
+[ -f $F.csv ] || grep $FILTRO  *$Y$M$D*.txt \
+ 	       | cut -d ';' -f 2,4,6 \
+	       | sed -e 's/.....$//g' -e 's/0;/;/g' -e 's/,/./g' \
+	       | sort \
+	       | uniq \
+	       | sort -nt ';' -k 3 > $F.csv
+
+# Create loop
+echo "Criando laço..."
+cut -d ';' -f 1 $F.csv \
+  | sort \
+  | uniq > $F.loop
+
+# Process data
+for T in $(cat $F.loop); do
+  echo "Processando $T..."
+  mkdir -p $F
+  OUT=$F/$T
+  echo '[' > $F.tmp
+  for C in 1{0..7}{0..5}; do
+    grep -e $T $F.csv \
+    | grep ";$C" \
+    | cut -d ';' -f 2 \
+    | sort -n \
+    | jq -s "{ time:${C}0, 
+	       max:max, 
+	       min:min, 
+	       median: (sort|.[(length/2|floor)]),
+	       avg: (add/length), 
+	       count:length }" >> $F.tmp 
+    echo ',' >> $F.tmp
+  done
+  echo 'Criando estatísticas...'
+  C=18
+  grep -e $T $F.csv \
+  | grep ";$C" \
+  | cut -d ';' -f 2 \
+  | sort -n \
+  | jq -s "{ time:${C}00,max:max,min:min,median:(sort|.[(length/2|floor)]),avg:(add/length),count:length }" >> $F.tmp 
+  echo 'Fechando laço...'
+  echo ']' >> $F.tmp
+  cat $F.tmp \
+  | tr -d "\n" \
+  | tr -d " " \
+  | sed -e "s/,,,,/,/g" -e "s/,,,/,/g" -e "s/,,/,/g" -e "s/\[,/\[/g" -e "s/,\]/\]/g" \
+  > $OUT
+  jq empty $OUT
+  (( $? )) && echo "===>> Erro ao processar o $T!"
+done
+
+# Generate index
+echo 'Gerando index...'
+echo "[" > $F.index
+for I in $(ls -d */ | sed s_/__g); do
+  echo -n '{"date":'$I'},' >> $F.index
+done
+echo -n "]" >> $F.index
+echo 'Apagando dados antigos...'
+find -maxdepth 1 -type d -mtime +40 -not -path ./.git 
+find -maxdepth 1 -type d -mtime +40 -not -path ./.git | xargs rm -rf
+echo 'Processando index'
+cat $F.index \
+  | tr -d "\n" \
+  | tr -d " " \
+  | sed -e "s/,,,,/,/g" -e "s/,,,/,/g" -e "s/,,/,/g" -e "s/\[,/\[/g" -e "s/,\]/\]/g" \
+  > INDEX
+  jq empty INDEX
+  (( $? )) && echo "===>> Erro ao processar o INDEX!"
