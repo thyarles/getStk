@@ -1,4 +1,4 @@
-name: Sync
+name: SyncData
 on:
   #schedule:
   #  - cron: '45 23 * * MON-FRI'
